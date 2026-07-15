@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import api from '../services/api';
-import { FiSliders, FiCheckCircle, FiAlertTriangle, FiShield, FiKey } from 'react-icons/fi';
+import { FiSliders, FiCheckCircle, FiAlertTriangle, FiShield, FiKey, FiLock } from 'react-icons/fi';
 
 const AssignPermission = () => {
+  const currentUser = useSelector(state => state.auth.user);
   const [roles, setRoles] = useState([]);
   const [permissions, setPermissions] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -138,25 +140,38 @@ const AssignPermission = () => {
             </h3>
             
             <div className="space-y-1">
-              {roles.map(r => (
-                <button
-                  key={r.id}
-                  onClick={() => handleRoleSelect(r.id)}
-                  className={`w-full text-left px-4 py-3 rounded-lg text-xs font-semibold transition-all ${
-                    selectedRoleId === r.id
-                      ? 'bg-microsoft-blueLight text-microsoft-blue dark:bg-blue-950/40 dark:text-blue-400 border-l-4 border-microsoft-blue'
-                      : 'text-gray-650 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800'
-                  }`}
-                >
-                  {r.name}
-                  <span className="block text-[10px] text-gray-450 mt-0.5 font-normal truncate">{r.description || 'No description'}</span>
-                </button>
-              ))}
+              {roles.map(r => {
+                const isAdmin = r.name === 'Administrator';
+                return (
+                  <button
+                    key={r.id}
+                    onClick={() => handleRoleSelect(r.id)}
+                    className={`w-full text-left px-4 py-3 rounded-lg text-xs font-semibold transition-all ${
+                      selectedRoleId === r.id
+                        ? 'bg-microsoft-blueLight text-microsoft-blue dark:bg-blue-950/40 dark:text-blue-400 border-l-4 border-microsoft-blue'
+                        : 'text-gray-650 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800'
+                    }`}
+                  >
+                    <span className="flex items-center justify-between">
+                      {r.name}
+                      {isAdmin && <FiLock className="text-amber-500 flex-shrink-0" title="Administrator role is locked" />}
+                    </span>
+                    <span className="block text-[10px] text-gray-450 mt-0.5 font-normal truncate">{r.description || 'No description'}</span>
+                  </button>
+                );
+              })}
             </div>
           </div>
 
           {/* Permissions Matrix (Right columns) */}
           <div className="md:col-span-2 bg-white dark:bg-microsoft-cardDark p-6 rounded-xl border border-microsoft-borderLight dark:border-microsoft-borderDark shadow-sm space-y-6">
+            {/* Admin role lock banner */}
+            {roles.find(r => r.id === parseInt(selectedRoleId))?.name === 'Administrator' && (
+              <div className="flex items-center gap-2 p-3 bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800 rounded-lg text-xs text-amber-700 dark:text-amber-400">
+                <FiLock className="flex-shrink-0" />
+                <span><strong>Administrator role is locked.</strong> Its permissions cannot be modified to protect system stability.</span>
+              </div>
+            )}
             <div className="flex justify-between items-center pb-3 border-b border-gray-150 dark:border-gray-850">
               <h3 className="font-bold text-xs uppercase tracking-wider text-gray-800 dark:text-gray-100 flex items-center gap-2">
                 <FiKey className="text-microsoft-blue" />
@@ -165,7 +180,8 @@ const AssignPermission = () => {
               
               <button
                 onClick={handleSavePermissions}
-                className="px-4 py-2 bg-microsoft-blue hover:bg-microsoft-blueHover text-white text-xs font-bold rounded-lg shadow-sm transition-colors"
+                disabled={roles.find(r => r.id === parseInt(selectedRoleId))?.name === 'Administrator'}
+                className="px-4 py-2 bg-microsoft-blue hover:bg-microsoft-blueHover disabled:opacity-40 disabled:cursor-not-allowed text-white text-xs font-bold rounded-lg shadow-sm transition-colors"
               >
                 Save Privileges
               </button>
@@ -186,7 +202,8 @@ const AssignPermission = () => {
                           type="checkbox"
                           checked={checkedPermissions.includes(p.id)}
                           onChange={() => handlePermissionToggle(p.id)}
-                          className="mt-0.5 rounded border-gray-300 text-microsoft-blue focus:ring-microsoft-blue"
+                          disabled={roles.find(r => r.id === parseInt(selectedRoleId))?.name === 'Administrator'}
+                          className="mt-0.5 rounded border-gray-300 text-microsoft-blue focus:ring-microsoft-blue disabled:opacity-40 disabled:cursor-not-allowed"
                         />
                         <div>
                           <p className="font-bold text-gray-800 dark:text-gray-200">{p.name}</p>

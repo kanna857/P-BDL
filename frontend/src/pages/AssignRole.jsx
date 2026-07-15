@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import api from '../services/api';
-import { FiUserPlus, FiSearch, FiCheckCircle, FiAlertTriangle } from 'react-icons/fi';
+import { FiUserPlus, FiSearch, FiCheckCircle, FiAlertTriangle, FiLock } from 'react-icons/fi';
 
 const AssignRole = () => {
+  const currentUser = useSelector(state => state.auth.user);
+  const isCurrentUserAdmin = currentUser?.role?.name === 'Administrator';
   const [users, setUsers] = useState([]);
   const [roles, setRoles] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -160,18 +163,27 @@ const AssignRole = () => {
                         className="px-2 py-1.5 text-xs rounded-lg border border-slate-800/50 bg-slate-950/50 text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500/50"
                       >
                         <option value="" className="bg-slate-950 text-gray-200">Visitor (No permissions)</option>
-                        {roles.map(r => (
-                          <option key={r.id} value={r.id} className="bg-slate-950 text-gray-200">{r.name}</option>
-                        ))}
+                        {roles
+                          .filter(r => isCurrentUserAdmin || r.name !== 'Administrator')
+                          .map(r => (
+                            <option key={r.id} value={r.id} className="bg-slate-950 text-gray-200">{r.name}</option>
+                          ))}
                       </select>
                     </td>
                     <td className="px-6 py-4 text-right">
-                      <button
-                        onClick={() => handleAssignRole(u.id)}
-                        className="px-3 py-1.5 bg-blue-600 hover:bg-blue-500 text-white text-[11px] font-bold rounded-lg shadow-[0_0_12px_rgba(37,99,235,0.3)] transition-colors"
-                      >
-                        Save Assignment
-                      </button>
+                      {u.role?.name === 'Administrator' && !isCurrentUserAdmin ? (
+                        <span className="flex items-center justify-end gap-1 text-amber-500 text-[11px] font-semibold">
+                          <FiLock />
+                          Admin locked
+                        </span>
+                      ) : (
+                        <button
+                          onClick={() => handleAssignRole(u.id)}
+                          className="px-3 py-1.5 bg-blue-600 hover:bg-blue-500 text-white text-[11px] font-bold rounded-lg shadow-[0_0_12px_rgba(37,99,235,0.3)] transition-colors"
+                        >
+                          Save Assignment
+                        </button>
+                      )}
                     </td>
                   </tr>
                 ))}

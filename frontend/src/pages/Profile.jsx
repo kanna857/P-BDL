@@ -8,16 +8,13 @@ const Profile = () => {
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [sessions, setSessions] = useState([]);
+  const [hasHistoryAccess, setHasHistoryAccess] = useState(true);
   
   const [success, setSuccess] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
   // Fetch active sessions of the user
-  // Let's create a small local fetch routine.
-  // We can query login history of this user or sessions. In a production app, the backend yields them.
-  // Since we have a backend that stores user_sessions, we can filter them or fetch the login history for this user.
-  // Let's query `/audit/login-history` and filter by user email.
   useEffect(() => {
     const fetchMyHistory = async () => {
       try {
@@ -25,7 +22,11 @@ const Profile = () => {
         const myLogs = resp.data.filter(log => log.email === user.email);
         setSessions(myLogs.slice(0, 5)); // show last 5 login history logs
       } catch (err) {
-        console.error('Could not fetch personal sign-in history logs:', err);
+        if (err.response?.status === 403) {
+          setHasHistoryAccess(false); // gracefully show no-access instead of crash
+        } else {
+          console.error('Could not fetch personal sign-in history logs:', err);
+        }
       }
     };
     if (user) {
