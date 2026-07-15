@@ -1,0 +1,211 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply transition-colors duration-200;
+    background: radial-gradient(circle at 30% 30%, #0d1633 0%, #020512 80%) no-repeat fixed !important;
+  }
+}
+
+/* Custom scrollbar styling */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-gray-700/50 rounded-full hover:bg-gray-600/70;
+}
+
+/* Custom glassmorphism details */
+.glass-panel {
+  background: rgba(8, 12, 28, 0.45) !important;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+.glass-card {
+  background: rgba(8, 12, 28, 0.45) !important;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.07) !important;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37) !important;
+}
+
+/* Neon glows for cards */
+.glow-blue {
+  box-shadow: 0 0 15px -3px rgba(0, 120, 212, 0.3), inset 0 0 8px 0 rgba(0, 120, 212, 0.1) !important;
+  border-color: rgba(0, 120, 212, 0.45) !important;
+}
+
+.glow-purple {
+  box-shadow: 0 0 15px -3px rgba(139, 92, 246, 0.3), inset 0 0 8px 0 rgba(139, 92, 246, 0.1) !important;
+  border-color: rgba(139, 92, 246, 0.45) !important;
+}
+
+.glow-teal {
+  box-shadow: 0 0 15px -3px rgba(13, 148, 136, 0.3), inset 0 0 8px 0 rgba(13, 148, 136, 0.1) !important;
+  border-color: rgba(13, 148, 136, 0.45) !important;
+}
+
+.glow-orange {
+  box-shadow: 0 0 15px -3px rgba(234, 88, 12, 0.3), inset 0 0 8px 0 rgba(234, 88, 12, 0.1) !important;
+  border-color: rgba(234, 88, 12, 0.45) !important;
+}
+
+.glow-red {
+  box-shadow: 0 0 15px -3px rgba(239, 68, 68, 0.3), inset 0 0 8px 0 rgba(239, 68, 68, 0.1) !important;
+  border-color: rgba(239, 68, 68, 0.45) !important;
+}
+
+/* Pulse animation for active statuses */
+@keyframes status-pulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.15); opacity: 0.7; }
+}
+
+.status-active-dot {
+  animation: status-pulse 2s infinite ease-in-out;
+}
+
+/* 3D Perspective Hover Effect */
+.tilt-card {
+  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease, border-color 0.4s ease !important;
+  transform-style: preserve-3d;
+  perspective: 1000px;
+}
+
+.tilt-card:hover {
+  transform: translateY(-8px) scale(1.03) rotateX(4deg) rotateY(-1.5deg) !important;
+}
+
+/* Glowing Neon Card Upgrades on Hover */
+.tilt-card.glow-blue:hover {
+  box-shadow: 0 15px 35px -5px rgba(0, 120, 212, 0.4), inset 0 0 15px 0 rgba(0, 120, 212, 0.15) !important;
+  border-color: rgba(0, 120, 212, 0.7) !important;
+}
+
+.tilt-card.glow-purple:hover {
+  box-shadow: 0 15px 35px -5px rgba(139, 92, 246, 0.4), inset 0 0 15px 0 rgba(139, 92, 246, 0.15) !important;
+  border-color: rgba(139, 92, 246, 0.7) !important;
+}
+
+.tilt-card.glow-teal:hover {
+  box-shadow: 0 15px 35px -5px rgba(13, 148, 136, 0.4), inset 0 0 15px 0 rgba(13, 148, 136, 0.15) !important;
+  border-color: rgba(13, 148, 136, 0.7) !important;
+}
+
+.tilt-card.glow-orange:hover {
+  box-shadow: 0 15px 35px -5px rgba(234, 88, 12, 0.4), inset 0 0 15px 0 rgba(234, 88, 12, 0.15) !important;
+  border-color: rgba(234, 88, 12, 0.7) !important;
+}
+
+/* Smooth float animation for elements / shield */
+@keyframes float {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-10px) rotate(1.5deg); }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+/* Custom 3D Orb backgrounds */
+@keyframes pulse-glow {
+  0%, 100% { transform: scale(1) translate(0px, 0px); opacity: 0.15; }
+  33% { transform: scale(1.15) translate(30px, -20px); opacity: 0.28; }
+  66% { transform: scale(0.9) translate(-15px, 40px); opacity: 0.12; }
+}
+
+.glow-orb-1 {
+  animation: pulse-glow 18s ease-in-out infinite;
+}
+
+.glow-orb-2 {
+  animation: pulse-glow 25s ease-in-out infinite;
+}
+
+/* Rotating rings */
+@keyframes rotate-slow {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.animate-rotate-slow {
+  animation: rotate-slow 25s linear infinite;
+  transform-origin: center;
+}
+
+@keyframes rotate-reverse-slow {
+  0% { transform: rotate(360deg); }
+  100% { transform: rotate(0deg); }
+}
+
+.animate-rotate-reverse-slow {
+  animation: rotate-reverse-slow 35s linear infinite;
+  transform-origin: center;
+}
+
+/* 3D Entry Animations */
+@keyframes perspective-fade-in {
+  0% { transform: perspective(1200px) rotateX(-8deg) translateY(24px); opacity: 0; }
+  100% { transform: perspective(1200px) rotateX(0deg) translateY(0); opacity: 1; }
+}
+
+.animate-3d-entry {
+  opacity: 0;
+  animation: perspective-fade-in 0.75s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+}
+
+.stagger-1 { animation-delay: 0.06s; }
+.stagger-2 { animation-delay: 0.12s; }
+.stagger-3 { animation-delay: 0.18s; }
+.stagger-4 { animation-delay: 0.24s; }
+.stagger-5 { animation-delay: 0.30s; }
+
+/* Automatically map legacy white/card containers inside dashboard layouts to premium glass cards */
+.min-h-screen.bg-transparent .bg-white.dark\:bg-microsoft-cardDark,
+.min-h-screen.bg-transparent .bg-white.dark\:bg-slate-900,
+.min-h-screen.bg-transparent .dark\:bg-microsoft-cardDark {
+  background: rgba(8, 12, 28, 0.45) !important;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.07) !important;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37) !important;
+  opacity: 0;
+  animation: perspective-fade-in 0.75s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+  animation-delay: 0.12s;
+}
+
+/* Upgrade input/select controls in all forms to high-contrast glass style */
+.min-h-screen.bg-transparent input:not([type="checkbox"]):not([type="radio"]),
+.min-h-screen.bg-transparent select,
+.min-h-screen.bg-transparent textarea {
+  border-color: rgba(255, 255, 255, 0.08) !important;
+  background-color: rgba(3, 7, 18, 0.5) !important;
+  color: #e2e8f0 !important;
+}
+
+.min-h-screen.bg-transparent input:not([type="checkbox"]):not([type="radio"]):focus,
+.min-h-screen.bg-transparent select:focus,
+.min-h-screen.bg-transparent textarea:focus {
+  border-color: rgba(59, 130, 246, 0.5) !important;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2) !important;
+}
+
+/* Staggered load settings for children lists */
+.min-h-screen.bg-transparent tr {
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+.min-h-screen.bg-transparent tr:hover {
+  transform: scale(1.002);
+}
+
+
