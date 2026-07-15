@@ -1,0 +1,28 @@
+services:
+  - type: web
+    name: entra-rbac-backend
+    runtime: python
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: python -m uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: PYTHONPATH
+        value: .
+      - key: SECRET_KEY
+        generateValue: true
+      - key: REFRESH_SECRET_KEY
+        generateValue: true
+      - key: ACCESS_TOKEN_EXPIRE_MINUTES
+        value: "30"
+      - key: REFRESH_TOKEN_EXPIRE_DAYS
+        value: "7"
+      - key: DATABASE_URL
+        value: sqlite:///./sql_app.db
+      - key: SEED_ADMIN_EMAIL
+        value: admin@entra-rbac.com
+      - key: SEED_ADMIN_PASSWORD
+        value: AdminPass123!
+      - key: ENVIRONMENT
+        value: production
+      - key: BACKEND_CORS_ORIGINS
+        value: '["https://kanna857.github.io", "http://localhost:5173"]'
