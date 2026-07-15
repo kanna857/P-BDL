@@ -6,10 +6,12 @@ import { store } from './store'
 import App from './App'
 import './index.css'
 
+const basename = import.meta.env.DEV ? '/' : '/P-BDL';
+
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <Provider store={store}>
-      <BrowserRouter>
+      <BrowserRouter basename={basename}>
         <App />
       </BrowserRouter>
     </Provider>
