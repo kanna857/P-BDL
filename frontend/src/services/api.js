@@ -2,12 +2,13 @@ import axios from 'axios';
 import { store } from '../store';
 import { refreshSuccess, logoutSuccess } from '../store/authSlice';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1';
+const API_URL = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:8000/api/v1' : 'https://old-pots-follow.loca.lt/api/v1');
 
 const api = axios.create({
   baseURL: API_URL,
   headers: {
     'Content-Type': 'application/json',
+    'Bypass-Tunnel-Reminder': 'true'
   },
 });
 
