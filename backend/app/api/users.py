@@ -230,12 +230,34 @@ def assign_role(
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
 
+    # 1. Fetch target role (if any)
+    target_role = None
     if role_id is not None and role_id != 0:
-        role = db.query(Role).filter(Role.id == role_id).first()
-        if not role:
+        target_role = db.query(Role).filter(Role.id == role_id).first()
+        if not target_role:
             raise HTTPException(status_code=400, detail="Invalid role ID")
+
+    # 2. Extract current roles info
+    current_user_role = current_user.role.name if current_user.role else "None"
+    target_user_current_role = user.role.name if user.role else "None"
+
+    # 3. Guard against privilege escalation
+    if target_role and target_role.name == "Administrator" and current_user_role != "Administrator":
+        raise HTTPException(
+            status_code=403,
+            detail="Only Administrators can assign the Administrator role."
+        )
+
+    if target_user_current_role == "Administrator" and current_user_role != "Administrator":
+        raise HTTPException(
+            status_code=403,
+            detail="Only Administrators can change or demote an existing Administrator."
+        )
+
+    # 4. Assign role
+    if target_role:
         user.role_id = role_id
-        role_name = role.name
+        role_name = target_role.name
     else:
         user.role_id = None
         role_name = "None"

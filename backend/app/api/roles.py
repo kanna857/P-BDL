@@ -163,6 +163,12 @@ def assign_permission(
     if not role:
         raise HTTPException(status_code=404, detail="Role not found")
 
+    if role.name == "Administrator":
+        raise HTTPException(
+            status_code=403,
+            detail="Modification of Administrator role permissions is locked to protect directory stability."
+        )
+
     perms = db.query(Permission).filter(Permission.id.in_(permission_ids)).all()
     old_perms = [p.name for p in role.permissions]
     role.permissions = perms
