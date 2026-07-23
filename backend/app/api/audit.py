@@ -8,6 +8,7 @@ from app.models.audit import AuditLog, LoginHistory
 from app.models.user import User, UserSession
 from app.models.role import Role
 from app.models.department import Department
+from app.models.governance import AccessRequest, VisitorPass, SecurityAlert, Policy
 from app.schemas.audit import AuditLogResponse, LoginHistoryResponse
 from app.services.auth import PermissionRequirement, get_current_user, AuthService
 
@@ -87,20 +88,62 @@ def get_governance_stats(
     if not ("users:read" in perms or "*" in perms or "audit:read" in perms):
         raise HTTPException(status_code=403, detail="Not authorized to fetch workspace stats.")
 
+    now = datetime.now(timezone.utc)
+
+    # Core counts
     total_users = db.query(func.count(User.id)).scalar()
     total_roles = db.query(func.count(Role.id)).scalar()
     total_departments = db.query(func.count(Department.id)).scalar()
     active_sessions = db.query(func.count(UserSession.id)).scalar()
 
+    # Failed logins in last 24 hours
     failed_logins_24h = db.query(func.count(LoginHistory.id)).filter(
         LoginHistory.status == "Failed",
-        LoginHistory.timestamp >= datetime.now(timezone.utc) - timedelta(days=1)
+        LoginHistory.timestamp >= now - timedelta(hours=24)
     ).scalar()
+
+    # Pending access requests
+    pending_access_requests = 0
+    expiring_visitor_passes = 0
+    open_security_alerts = 0
+    active_policies = 0
+
+    try:
+        pending_access_requests = db.query(func.count(AccessRequest.id)).filter(
+            AccessRequest.status == "Pending"
+        ).scalar() or 0
+
+        # Visitor passes expiring within 24 hours
+        # Use naive datetime for SQLite compatibility
+        now_naive = datetime.utcnow()
+        expiring_visitor_passes = db.query(func.count(VisitorPass.id)).filter(
+            VisitorPass.expires_at <= now_naive + timedelta(hours=24),
+            VisitorPass.expires_at >= now_naive,
+            VisitorPass.status.in_(["Active", "Approved", "Pending"])
+        ).scalar() or 0
+
+        # Open security alerts
+        open_security_alerts = db.query(func.count(SecurityAlert.id)).filter(
+            SecurityAlert.status.in_(["Open", "Investigating"])
+        ).scalar() or 0
+
+        # Active policies count
+        active_policies = db.query(func.count(Policy.id)).filter(
+            Policy.is_active == True
+        ).scalar() or 0
+
+    except Exception as e:
+        import logging
+        logging.warning(f"Governance stats query failed: {e}")
 
     return {
         "total_users": total_users,
         "total_roles": total_roles,
         "total_departments": total_departments,
         "active_sessions": active_sessions,
-        "failed_logins_24h": failed_logins_24h
+        "failed_logins_24h": failed_logins_24h,
+        "pending_access_requests": pending_access_requests,
+        "expiring_visitor_passes": expiring_visitor_passes,
+        "open_security_alerts": open_security_alerts,
+        "active_policies": active_policies,
     }

@@ -1,39 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
-import { FiMenu, FiSun, FiMoon, FiBell, FiChevronDown, FiUser, FiSettings, FiLogOut, FiSearch } from 'react-icons/fi';
+import { FiMenu, FiBell, FiChevronDown, FiUser, FiSettings, FiLogOut, FiSearch } from 'react-icons/fi';
 
 const Navbar = ({ isCollapsed, toggleCollapse }) => {
   const location = useLocation();
   const { user, logout } = useAuth();
-  const [isDarkMode, setIsDarkMode] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
 
-  // Initialize theme from localStorage or system preferences
+  // Always enforce dark mode — this app is dark-theme only
   useEffect(() => {
-    const savedTheme = localStorage.getItem('theme');
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    
-    if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
-      setIsDarkMode(true);
-      document.documentElement.classList.add('dark');
-    } else {
-      setIsDarkMode(false);
-      document.documentElement.classList.remove('dark');
-    }
+    document.documentElement.classList.add('dark');
   }, []);
-
-  const toggleTheme = () => {
-    if (isDarkMode) {
-      document.documentElement.classList.remove('dark');
-      localStorage.setItem('theme', 'light');
-      setIsDarkMode(false);
-    } else {
-      document.documentElement.classList.add('dark');
-      localStorage.setItem('theme', 'dark');
-      setIsDarkMode(true);
-    }
-  };
 
   // Compute breadcrumb/title from path
   const getPageTitle = () => {
@@ -76,14 +54,6 @@ const Navbar = ({ isCollapsed, toggleCollapse }) => {
       </div>
 
       <div className="flex items-center gap-4 px-6">
-        {/* Dark Mode Switcher (Sleek design representation, always dark here) */}
-        <button
-          onClick={toggleTheme}
-          title={isDarkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
-          className="p-2 text-gray-400 hover:text-white hover:bg-white/5 rounded-lg transition-colors"
-        >
-          {isDarkMode ? <FiSun className="text-xl" /> : <FiMoon className="text-xl" />}
-        </button>
 
         {/* Notifications Mock */}
         <button

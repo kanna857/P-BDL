@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../hooks/useAuth';
 import { VscShield } from 'react-icons/vsc';
 import { FiMail, FiLock, FiAlertCircle } from 'react-icons/fi';
@@ -17,6 +17,14 @@ const Login = () => {
   const [newPassword, setNewPassword] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
   const [localError, setLocalError] = useState('');
+
+  // Auto-clear any stale/expired tokens when Login page loads
+  useEffect(() => {
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('refresh_token');
+    localStorage.removeItem('user_profile');
+    resetError();
+  }, []);
 
   const handleLoginSubmit = async (e) => {
     e.preventDefault();
@@ -78,13 +86,13 @@ const Login = () => {
   return (
     <div className="flex min-h-screen items-center justify-center px-4 py-12 transition-colors">
       <div className="w-full max-w-[440px] glass-card p-10 rounded-2xl border border-slate-700/40 shadow-[0_0_40px_rgba(0,120,212,0.15)] glow-blue transition-all">
-        {/* Microsoft Entra / App Logo */}
+        {/* BDL Entra / App Logo */}
         <div className="flex items-center gap-2 mb-6">
           <div className="flex items-center justify-center w-9 h-9 rounded bg-[#0078d4] text-white shadow-[0_0_15px_rgba(0,120,212,0.4)]">
             <VscShield className="text-2xl" />
           </div>
           <span className="font-semibold text-lg text-white">
-            Microsoft Entra ID
+            BDL Entra ID
           </span>
         </div>
 
@@ -162,7 +170,7 @@ const Login = () => {
             </button>
 
             <div className="text-center text-[10px] text-gray-500 mt-8">
-              Secured under Microsoft Entra Identity Governance Guidelines.
+              Secured under BDL Entra Identity Governance Guidelines.
             </div>
           </form>
         )}

@@ -73,27 +73,7 @@ const Sidebar = ({ isCollapsed, toggleCollapse }) => {
         })}
       </nav>
 
-      {/* System Status Card */}
-      {!isCollapsed && (
-        <div className="mx-4 my-2 p-3.5 rounded-xl bg-slate-950/40 border border-slate-800/40">
-          <div className="flex items-center justify-between text-xs mb-2">
-            <span className="font-semibold text-gray-300 flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 status-active-dot"></span>
-              System Status
-            </span>
-            <span className="text-[10px] text-gray-500 cursor-pointer hover:text-white">✕</span>
-          </div>
-          <p className="text-[10px] text-gray-400">All Systems Operational</p>
-          <div className="flex items-center gap-1 my-2.5">
-            {[...Array(12)].map((_, i) => (
-              <span key={i} className="flex-1 h-1.5 rounded-full bg-teal-500"></span>
-            ))}
-          </div>
-          <div className="flex items-center justify-between text-[9px] text-gray-400">
-            <span>Uptime: 99.99%</span>
-          </div>
-        </div>
-      )}
+
 
       {/* User Footer Panel */}
       {user && (

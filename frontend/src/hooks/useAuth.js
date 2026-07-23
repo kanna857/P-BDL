@@ -35,7 +35,16 @@ export const useAuth = () => {
       navigate('/dashboard');
       return true;
     } catch (err) {
-      const errMsg = err.response?.data?.detail || 'Authentication failed. Please check your credentials.';
+      console.error('[Auth] Login error:', err.message, err.response?.data);
+      // Show actual backend message if available, otherwise a clear network error
+      let errMsg = 'Authentication failed. Please check your credentials.';
+      if (err.response?.data?.detail) {
+        errMsg = Array.isArray(err.response.data.detail)
+          ? err.response.data.detail.map(d => d.msg).join(', ')
+          : err.response.data.detail;
+      } else if (!err.response) {
+        errMsg = 'Cannot reach server. Make sure the backend is running on port 8000.';
+      }
       dispatch(authFailure(errMsg));
       return false;
     }
